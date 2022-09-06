@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.amcoding.pokemonproject">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:name=".PokemonApplication"
         android:allowBackup="true"
@@ -17,7 +19,6 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.PokemonProject">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

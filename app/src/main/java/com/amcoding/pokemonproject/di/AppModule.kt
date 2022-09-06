@@ -25,6 +25,8 @@ object AppModule {
 
 
     //The Gson converter factory will convert the JSON files into the Kotlin data classes.
+    @Singleton
+    @Provides
     fun providePokeApi(): PokeApi {
         return Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())

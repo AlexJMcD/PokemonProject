@@ -1,7 +1,7 @@
 package com.amcoding.pokemonproject.data.remote.responses
 
 data class Stat(
-    val base_stat: Int,
+    val baseStat: Int,
     val effort: Int,
     val stat: StatX
 )

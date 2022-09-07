@@ -1,7 +1,7 @@
 package com.amcoding.pokemonproject.data.remote.responses
 
 data class VersionGroupDetail(
-    val levelLearnedAt: Int,
-    val moveLearnMethod: MoveLearnMethod,
-    val versionGroup: VersionGroup
+    val level_learned_at: Int,
+    val move_learn_method: MoveLearnMethod,
+    val version_group: VersionGroup
 )

@@ -2,7 +2,6 @@ package com.amcoding.pokemonproject.di
 
 import com.amcoding.pokemonproject.data.remote.PokeApi
 import com.amcoding.pokemonproject.repository.PokemonRepository
-import com.amcoding.pokemonproject.util.Constants
 import com.amcoding.pokemonproject.util.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides

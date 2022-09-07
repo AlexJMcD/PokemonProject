@@ -1,6 +1,6 @@
 package com.amcoding.pokemonproject.data.remote.responses
 
 data class Emerald(
-    val frontDefault: String,
-    val frontShiny: String
+    val front_default: String,
+    val front_shiny: String
 )

@@ -1,8 +1,8 @@
 package com.amcoding.pokemonproject.data.remote.responses
 
 data class OmegarubyAlphasapphire(
-    val frontDefault: String,
-    val frontFemale: Any,
-    val frontShiny: String,
-    val frontShinyFemale: Any
+    val front_default: String,
+    val front_female: Any,
+    val front_shiny: String,
+    val front_shiny_female: Any
 )

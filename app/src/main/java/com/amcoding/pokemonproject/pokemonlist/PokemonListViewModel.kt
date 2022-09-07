@@ -29,6 +29,8 @@ class PokemonListViewModel @Inject constructor(
     var isLoading = mutableStateOf(false)
     var endReached = mutableStateOf(false)
 
+    //This stores the Pokemon list at the point of searching, so there is a Pokemon list state
+    //to revert to once the search is ended.
     private var cachedPokemonList = listOf<PokedexListEntry>()
     private var isSearchStarting = true
     var isSearching = mutableStateOf(false)
@@ -38,6 +40,7 @@ class PokemonListViewModel @Inject constructor(
     }
 
 
+    //The app search functionality allows the user to search by both name and Pokedex number.
     fun searchPokemonList(query: String){
         val listToSearch = if(isSearchStarting){
             pokemonList.value
@@ -64,7 +67,7 @@ class PokemonListViewModel @Inject constructor(
         }
     }
 
-
+    //A Kotlin coroutine that loads 20 Pokemon at a time, and generates the appropriate URL for getting the Pokemon sprite.
     fun loadPokemonPaginated() {
         viewModelScope.launch {
             isLoading.value = true

@@ -70,7 +70,6 @@ dependencies {
     implementation "androidx.compose.material:material-icons-extended:1.2.1"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0-alpha01"
     implementation "androidx.navigation:navigation-compose:2.5.1"
-    implementation"androidx.constraintlayout:constraintlayout-compose:1.0.1"
 
 
     // Retrofit, used for handling network requests
@@ -84,17 +83,16 @@ dependencies {
     // Coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
 
     // Coroutine Lifecycle Scopes
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.5.1"
 
     // Coil - Used to load images from our API requests
-    implementation "io.coil-kt:coil:2.2.0"
-    implementation "io.coil-kt:coil-base:2.2.0"
+    //implementation "io.coil-kt:coil:2.2.0"
+    //implementation "io.coil-kt:coil-base:2.2.0"
     implementation "io.coil-kt:coil-compose:2.2.0"
-    implementation "com.google.accompanist:accompanist-coil:0.7.0"
+    //implementation "com.google.accompanist:accompanist-coil:0.7.0"
 
 
 

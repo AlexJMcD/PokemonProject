@@ -274,6 +274,9 @@ fun PokedexRow(
 }
 
 @Composable
+//If the Pokemon fail to load (due to not being connected to Wifi for example), a retry button will load that will
+//allow the user to retry the loading Pokemon process.
+//This error handling is currently very general, but specific error handling could be added later.
 fun RetrySection(
     error: String,
     onRetry: () -> Unit

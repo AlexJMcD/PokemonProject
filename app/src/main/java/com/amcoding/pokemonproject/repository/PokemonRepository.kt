@@ -1,6 +1,5 @@
 package com.amcoding.pokemonproject.repository
 
-import androidx.compose.ui.geometry.Offset
 import com.amcoding.pokemonproject.data.remote.PokeApi
 import com.amcoding.pokemonproject.data.remote.responses.Pokemon
 import com.amcoding.pokemonproject.data.remote.responses.PokemonList

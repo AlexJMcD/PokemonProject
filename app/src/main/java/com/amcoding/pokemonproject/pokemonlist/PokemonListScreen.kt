@@ -1,6 +1,5 @@
 package com.amcoding.pokemonproject.pokemonlist
 
-import android.widget.Space
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,7 +10,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
@@ -22,7 +20,6 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -30,12 +27,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil.compose.SubcomposeAsyncImage
+import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
 import com.amcoding.pokemonproject.R
 import com.amcoding.pokemonproject.data.models.PokedexListEntry
 import com.amcoding.pokemonproject.ui.theme.RobotoCondensed
+import kotlinx.coroutines.launch
 
 
 //The composable functions for the Pokemon List screen. As this is a relatively basic screen I did not separate
@@ -177,6 +174,7 @@ fun PokedexEntry(
     modifier: Modifier = Modifier,
     viewModel: PokemonListViewModel = hiltViewModel()
 ) {
+
     val defaultDominantColor = MaterialTheme.colors.surface
     var dominantColor by remember {
         mutableStateOf(defaultDominantColor)
@@ -203,17 +201,39 @@ fun PokedexEntry(
             }
     ) {
         Column {
-            SubcomposeAsyncImage(
-                model = ImageRequest
-                    .Builder(LocalContext.current)
-                    .data(entry.imageUrl)
-                    .build(),
-                contentDescription = "hello") {
+            //Get the reference to the image
+            val painter = rememberAsyncImagePainter(
+                model = entry.imageUrl
+            )
+            val painterState = painter.state
+            Image(
+                painter = painter,
+                contentDescription = entry.pokemonName,
+                modifier = Modifier
+                    .size(120.dp)
+                    .align(CenterHorizontally),
+            )
+            //Loading wheel shows while the image is loading.
+            if (painterState is AsyncImagePainter.State.Loading) {
                 CircularProgressIndicator(
                     color = MaterialTheme.colors.primary,
-                    modifier = Modifier.scale(0.5f)
+                    modifier = Modifier
+                        .scale(0.5f)
+                        .align(CenterHorizontally)
                 )
             }
+            //Once the image has been loaded the calculate dominant color function is used to set the background.
+            else if (painterState is AsyncImagePainter.State.Success) {
+                LaunchedEffect(key1 = painter) {
+                    launch {
+                        val image = painter.imageLoader.execute(painter.request).drawable
+                        viewModel.calcDominantColor(image!!) {
+                            dominantColor = it
+                        }
+                    }
+                }
+            }
+
             Text(
                 text = entry.pokemonName,
                 fontFamily = RobotoCondensed,
@@ -258,7 +278,7 @@ fun RetrySection(
     error: String,
     onRetry: () -> Unit
 ){
-    Column() {
+    Column {
         Text(text = error, color = Color.Red, fontSize = 18.sp)
         Spacer(modifier = Modifier.height(8.dp))
         Button(

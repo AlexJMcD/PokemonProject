@@ -5,7 +5,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
-import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.palette.graphics.Palette
@@ -72,7 +71,7 @@ class PokemonListViewModel @Inject constructor(
             when(val result = repository.getPokemonList(PAGE_SIZE, curPage * PAGE_SIZE)) {
                 is Resource.Success -> {
                     endReached.value = curPage * PAGE_SIZE >= result.data!!.count
-                    val pokedexEntries = result.data.results.mapIndexed { index, entry ->
+                    val pokedexEntries = result.data.results.mapIndexed { _, entry ->
                         val number = if(entry.url.endsWith("/")) {
                             entry.url.dropLast(1).takeLastWhile { it.isDigit() }
                         } else {
@@ -96,13 +95,18 @@ class PokemonListViewModel @Inject constructor(
     }
 
     fun calcDominantColor(drawable: Drawable, onFinish: (Color) -> Unit) {
-        val bmp = drawable.toBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight)
-            (drawable as BitmapDrawable).bitmap.copy(Bitmap.Config.ARGB_8888, true)
 
+
+        //Takes the drawable from the Pokemon sprite png, converts to a bitmap then to a pallete, and
+        //then returns the dominant color to the compose function.
+        val bmp = (drawable as BitmapDrawable).bitmap.copy(Bitmap.Config.ARGB_8888, true)
         Palette.from(bmp).generate { palette ->
             palette?.dominantSwatch?.rgb?.let { colorValue ->
                 onFinish(Color(colorValue))
             }
         }
+
+
+        }
+
     }
-}

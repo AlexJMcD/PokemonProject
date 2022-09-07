@@ -1,10 +1,8 @@
 package com.amcoding.pokemonproject.pokemondetail
 
-import androidx.compose.animation.fadeIn
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
@@ -14,21 +12,30 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
-import coil.compose.SubcomposeAsyncImage
 import coil.compose.rememberAsyncImagePainter
+import com.amcoding.pokemonproject.R
 import com.amcoding.pokemonproject.data.remote.responses.Pokemon
+import com.amcoding.pokemonproject.data.remote.responses.Type
 import com.amcoding.pokemonproject.util.Resource
+import com.amcoding.pokemonproject.util.parseTypeToColor
+import java.util.*
+import kotlin.math.roundToInt
 
 
 @Composable
@@ -142,6 +149,7 @@ fun PokemonDetailTopSection(
 }
 
 @Composable
+//The compose function for the box that contains the pokemon details/progress indicator/ error message if loading fails.
 fun PokemonDetailStateWrapper(
     pokemonInfo: Resource<Pokemon>,
     modifier: Modifier = Modifier,
@@ -149,7 +157,11 @@ fun PokemonDetailStateWrapper(
 ) {
     when(pokemonInfo){
         is Resource.Success -> {
-
+            PokemonDetailSection(
+                pokemonInfo = pokemonInfo.data!!,
+                modifier = modifier
+                    .offset(y = (-20).dp)
+            )
         }
         is Resource.Error -> {
             Text(
@@ -166,3 +178,140 @@ fun PokemonDetailStateWrapper(
         }
     }
 }
+
+//Will display information about the Pokemon, these are type, name, height, and weight.
+@Composable
+fun PokemonDetailSection(
+    pokemonInfo: Pokemon,
+    modifier: Modifier = Modifier
+) {
+    val scrollState = rememberScrollState()
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .fillMaxSize()
+            .offset(y = 50.dp)
+            .verticalScroll(scrollState)
+    ){
+        Text(
+            text = "#${pokemonInfo.id} ${pokemonInfo.name.replaceFirstChar {it.uppercase(Locale.getDefault())}}",
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colors.onSurface,
+            fontSize = 32.sp,
+
+        )
+        PokemonTypeSection(types = pokemonInfo.types)
+        PokemonDetailDataSection(
+            pokemonWeight = pokemonInfo.weight,
+            pokemonHeight = pokemonInfo.height,
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+
+}
+
+//Composable for the pokemon type and background color specific to the type.
+@Composable
+fun PokemonTypeSection(
+    types: List<Type>
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(16.dp)
+    ) {
+        for(type in types){
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 8.dp)
+                    .clip(CircleShape)
+                    .background(parseTypeToColor(type))
+                    .height(35.dp)
+            ){
+                Text(
+                    text = type.type.name.replaceFirstChar { it.uppercase(Locale.getDefault()) },
+                    color = Color.White,
+                    fontSize = 18.sp
+                )
+            }
+        }
+    }
+    
+}
+
+@Composable
+fun PokemonDetailDataSection(
+    modifier: Modifier = Modifier,
+    pokemonWeight: Int,
+    pokemonHeight: Int,
+    sectionHeight: Dp = 80.dp
+
+) {
+    val pokemonWeightKg = remember {
+        //The weight returned by the api is not in Kg so the below expression coverts the retrieved weight into Kg.
+        (pokemonWeight * 100f).roundToInt() /1000f
+    }
+    val pokemonHeightMetres = remember {
+        //The height returned by the api is not in M so the below expression coverts the retrieved weight into M.
+        (pokemonHeight * 100f).roundToInt() /1000f
+    }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ){
+        PokemonDetailDataItem(
+            dataValue = pokemonWeightKg,
+            dataUnit = "kg",
+            dataIcon = painterResource(id = R.drawable.ic_weight)
+        )
+        Spacer(modifier = Modifier
+            .size(1.dp, sectionHeight)
+            .background(Color.LightGray)
+        )
+        PokemonDetailDataItem(
+            dataValue = pokemonHeightMetres,
+            dataUnit = "m",
+            dataIcon = painterResource(id = R.drawable.ic_height)
+        )
+
+
+    }
+}
+
+//Composable for data items on the page, in this case it will be used for the height and weight sections.
+@Composable
+fun PokemonDetailDataItem(
+    dataValue: Float,
+    dataUnit: String,
+    dataIcon: Painter,
+    modifier: Modifier = Modifier
+) {
+    Column (
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ){
+        Icon(painter = dataIcon, contentDescription = null, tint = MaterialTheme.colors.onSurface)
+        Spacer(modifier = modifier.height(8.dp))
+        Text(
+            text = "$dataValue$dataUnit",
+            color = MaterialTheme.colors.onSurface
+
+        )
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

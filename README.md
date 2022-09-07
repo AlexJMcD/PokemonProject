@@ -11,3 +11,6 @@ and palette for extracting color values from images.
 This project was alot of fun and a great learning expereince.
 
 ![PokedexGIf](https://user-images.githubusercontent.com/92163117/188949615-fdf19599-61ba-48a0-9a92-16a5d06accc2.gif)
+
+https://www.youtube.com/c/PhilippLackner
+All of my Kotlin projects thus far have been thanks to Philipp, the link above is to his Youtube channel. I used a variety of his guides and lessosn to assist me in this project.
